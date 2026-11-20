@@ -5,6 +5,9 @@ import unittest
 from dsk import clean, scan, trash
 from helpers import MB, fake_mac, mac_home, write
 
+# /Applications isn't inside the fake home; on a CI Mac it holds several Xcodes, so leave it out.
+MINE = [k for k in scan.KEYS if k != "apps"]
+
 
 class ScanTest(unittest.TestCase):
     @classmethod
@@ -12,7 +15,7 @@ class ScanTest(unittest.TestCase):
         cls.home = mac_home()
         clean.LARGE_MIN = 50 * MB
         with fake_mac(cls.home):
-            cls.r = scan.Scanner().run()
+            cls.r = scan.Scanner(only=MINE).run()
             cls.groups = clean.evaluate(cls.r)
 
     @classmethod
@@ -99,7 +102,7 @@ class TrashGuardTest(unittest.TestCase):
         with fake_mac(self.home) as h:
             a = write(os.path.join(h, "Documents", "linked.bin"), 8 * MB)
             os.link(a, os.path.join(h, "Documents", "linked-again.bin"))
-            r = scan.Scanner().run()
+            r = scan.Scanner(only=MINE).run()
             self.assertLess(r.sizes["docs"], 15 * MB)
 
 
