@@ -1,0 +1,9 @@
+# App window (WebKit on macOS, Edge WebView2 on Windows)
+pywebview>=5.0
+# Moving things to the Trash / Recycle Bin
+send2trash>=1.8
+# Trusted certificates for update checks in the packaged app
+certifi
+# Optional "Ask Claude": the official Anthropic SDK, and the OS keychain for the API key
+anthropic>=1.0
+keyring>=24

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dsk</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="splash" class="pywebview-drag-region">
+    <div class="glow"></div>
+    <span class="mark splash-mark" style="--size:76px"><span class="l">d</span><span class="l">s</span><span class="l">k</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+  </div>
+
+  <div id="app">
+    <div class="titlebar pywebview-drag-region"></div>
+    <div id="scroll">
+      <header class="top pywebview-drag-region">
+        <span class="mark" style="--size:20px">dsk<span class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+        <span class="faint" id="version"></span>
+        <span class="spacer"></span>
+        <button class="update-pill hidden" id="update-pill"></button>
+        <button class="btn-icon lg" id="open-settings" title="Settings"><i data-icon="gear"></i></button>
+      </header>
+
+      <section class="hero card">
+        <div class="hero-head">
+          <div class="used"><b id="used">–</b><span id="of"></span></div>
+          <button class="rescan" id="rescan"><i data-icon="refresh"></i><span>Rescan</span></button>
+        </div>
+        <div class="status" id="status"><b id="status-verb">Getting ready</b><code id="status-path"></code></div>
+        <div class="bar-wrap" id="bar-wrap"><canvas id="bar"></canvas><div class="bar-tip hidden" id="bar-tip"></div></div>
+        <div class="cats" id="cats"></div>
+        <div class="hero-foot" id="hero-foot"></div>
+      </section>
+
+      <nav class="tabs-row" id="tabs">
+        <button class="tab on" data-tab="clean">Clean up<span class="count" id="tab-clean-n"></span></button>
+        <button class="tab" data-tab="large">Large files<span class="count" id="tab-large-n"></span></button>
+        <span class="spacer"></span>
+        <button class="claude-btn" id="ask-claude"><i data-icon="sparkle"></i><span>Ask Claude</span></button>
+      </nav>
+
+      <div class="claude-note hidden" id="claude-note"></div>
+      <section id="clean" class="panel-list"></section>
+      <section id="large" class="panel-list hidden"></section>
+      <div class="bottom-space"></div>
+    </div>
+
+    <div class="action-bar hidden" id="action-bar">
+      <div class="sel"><b id="sel-size"></b><span id="sel-what"></span></div>
+      <div class="progress hidden" id="clean-progress"><div></div></div>
+      <button class="btn-quiet" id="sel-clear">Clear selection</button>
+      <button class="btn-primary inline" id="sel-go"><i data-icon="trash"></i><span>Move to Trash</span></button>
+    </div>
+  </div>
+
+  <div id="welcome" class="hidden"></div>
+  <div id="modal-root"></div>
+  <div id="toasts"></div>
+  <script src="app.js"></script>
+</body>
+</html>
