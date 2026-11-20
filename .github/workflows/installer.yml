@@ -1,0 +1,48 @@
+# Checks the installers on pull requests that touch them: builds the app, the
+# Windows setup wizard and the macOS disk image, installs and uninstalls the
+# setup, and keeps both as downloadable artifacts. Releases build them in release.yml.
+name: Installer
+
+on:
+  pull_request:
+    paths: [installer/**, dsk/**, tests/**, requirements.txt, .github/workflows/installer.yml, .github/workflows/release.yml, Dsk.spec]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyinstaller certifi -r requirements.txt
+      - run: python -m unittest discover tests
+      - run: pyinstaller --noconfirm --log-level WARN Dsk.spec
+      - name: Smoke-test the built app
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then python tests/smoke_app.py dist/Dsk.app/Contents/MacOS/Dsk
+          else python tests/smoke_app.py dist/Dsk/Dsk.exe; fi
+      - name: Disk image (macOS)
+        if: runner.os == 'macOS'
+        run: installer/build_mac.sh Dsk && installer/test_mac.sh Dsk
+      - name: Setup wizard (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          installer/build_windows.ps1 -App Dsk -Version "$(Get-Content VERSION)" -Url https://dsk.pxlvzn.in
+          installer/test_windows.ps1 -App Dsk -Smoke "python tests/smoke_app.py"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Dsk-${{ runner.os }}
+          path: |
+            dist/Dsk.dmg
+            dist/Dsk-Setup.exe
+          if-no-files-found: error
